@@ -1,1 +1,3 @@
-# android-notes-app-for-automation
+# Android Notes App
+> Made for Automation demonstration
+
