@@ -32,6 +32,12 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew assembleRelease --no-daemon
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
     - name: Publish Apk
       uses: actions/upload-artifact@v3
       with:
@@ -51,6 +57,12 @@ jobs:
         java-version: '18'
         distribution: 'temurin'
         cache: gradle
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Get app version
