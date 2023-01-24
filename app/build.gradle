@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 33
+    namespace "info.androidhive.sqlite"
     defaultConfig {
         applicationId "info.androidhive.sqlite"
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
