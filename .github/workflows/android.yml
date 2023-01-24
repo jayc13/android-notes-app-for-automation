@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: set up JDK 18
+    - name: Set up JDK 18
       uses: actions/setup-java@v3
       with:
         java-version: '18'
@@ -39,3 +39,11 @@ jobs:
       with:
         name: Notes.apk
         path: app/build/outputs/apk/release/app-release-unsigned.apk
+
+  test:
+    name: Run Tests - Browserstack
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get app version
+      run: ./gradlew -q printVersionName
