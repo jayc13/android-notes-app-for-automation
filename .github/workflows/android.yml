@@ -51,11 +51,6 @@ jobs:
       run: |
         BS_PATH=$(curl -s -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" -X POST "https://api-cloud.browserstack.com/app-automate/upload" -F "file=@app/build/outputs/apk/release/app-release-unsigned.apk" | jq .app_url)
         echo "APP_PATH=$BS_PATH" >> $GITHUB_OUTPUT
-    - name: Debug
-      env:
-        APP_PATH: ${{ steps.bs-apk-upload.outputs.APP_PATH }}
-      run: |
-        echo $APP_PATH
     - name: Publish Apk
       uses: actions/upload-artifact@v3
       with:
