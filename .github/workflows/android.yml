@@ -48,7 +48,7 @@ jobs:
       env:
         BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
-      run: echo APP_PATH=$(curl -s -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESSKEY" -X POST "https://api-cloud.browserstack.com/app-automate/upload" -F "file=@/Users/jayc/notes.apk" | jq .app_url) >> $GITHUB_OUTPUT
+      run: echo "APP_PATH=$(curl -s -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESSKEY" -X POST "https://api-cloud.browserstack.com/app-automate/upload" -F "file=@/Users/jayc/notes.apk" | jq .app_url)" >> $GITHUB_OUTPUT
     - name: Publish Apk
       uses: actions/upload-artifact@v3
       with:
