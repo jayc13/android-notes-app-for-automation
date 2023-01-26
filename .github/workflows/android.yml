@@ -42,11 +42,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-caches-
     - name: Upload APK to BrowserStack
-      uses: shreyanshp/upload-app-browserstack@v3
-      with:
-        app-path: app/build/outputs/apk/release/app-release-unsigned.apk
-        browserstack-username: ${{ secrets.BROWSERSTACK_USERNAME }}
-        browserstack-accesskey: ${{ secrets.BROWSERSTACK_ACCESSKEY }}
+      run: |
+        echo "APP_PATH=$(curl -u "${{ secrets.BROWSERSTACK_USERNAME }}:${{ secrets.BROWSERSTACK_ACCESSKEY }}" \
+        -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
+        -F "file=@app/build/outputs/apk/release/app-release-unsigned.apk")
     - name: Publish Apk
       uses: actions/upload-artifact@v3
       with:
@@ -84,7 +83,7 @@ jobs:
       uses: caballerojavier13/automation-java-appium-notes@latest
       env:
         RUN_ON_BROWSERSTACK: TRUE
-        APP_PATH: TRUE
+        APP_PATH: ${{ steps.version.outputs.APP_PATH }}
         DEVICE_NAME: Google Pixel 7
         PLATFORM_VERSION: 13.0
         BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
