@@ -70,8 +70,16 @@ jobs:
     steps:
       - name: Debug
         env:
-          APP_VERSION: ${{ steps.get-app-version.outputs.APP_VERSION }}
+          APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
           APP_PATH: ${{ needs.build.outputs.APP_PATH }}
+          RUN_ON_BROWSERSTACK: 'TRUE'
+          DEVICE_NAME: 'Google Pixel 7'
+          PLATFORM_VERSION: '13.0'
+          BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
+          BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
+          BROWSERSTACK_BUILD_NAME: '${{ needs.build.outputs.APP_VERSION }}'
+          BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
+          
         run: |
           echo $APP_VERSION
           echo $APP_PATH
