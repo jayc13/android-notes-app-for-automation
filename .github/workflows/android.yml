@@ -42,7 +42,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-caches-
     - name: Upload APK to BrowserStack
-      id: browserstack-upload
       env:
         BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
@@ -80,7 +79,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Get app version
+      env:
+        APP_PATH: ${{ fromJSON(steps.version.outputs.BS_APP_PATH) }}
       run: |
         echo "APP_VERSION=$(./gradlew -q printVersionName)"
-        echo ${{ steps.browserstack-upload.outputs.BS_APP_PATH }}
+        echo $APP_PATH
 
