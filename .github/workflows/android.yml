@@ -45,7 +45,7 @@ jobs:
       env:
         BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
-      run: curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESSKEY" -X POST "https://api-cloud.browserstack.com/app-automate/upload" -F "file=@app/build/outputs/apk/release/app-release-unsigned.apk"
+      run: echo "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESSKEY"
     - name: Publish Apk
       uses: actions/upload-artifact@v3
       with:
@@ -79,14 +79,4 @@ jobs:
     - name: Get app version
       run: |
         echo "APP_VERSION=$(./gradlew -q printVersionName)
-    - name: Test the GH action
-      uses: caballerojavier13/automation-java-appium-notes@latest
-      env:
-        RUN_ON_BROWSERSTACK: 'TRUE'
-        APP_PATH: '${{ steps.version.outputs.APP_PATH }}'
-        DEVICE_NAME: 'Google Pixel 7'
-        PLATFORM_VERSION: '13.0'
-        BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
-        BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
-        BROWSERSTACK_BUILD_NAME: '${{ steps.version.outputs.APP_VERSION }}'
-        BROWSERSTACK_PROJECT_NAME: 'NotesApp'
+
