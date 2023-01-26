@@ -14,6 +14,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+  
+env:
+  BS_APP_PATH: ""
 
 jobs:
   build:
@@ -47,7 +50,6 @@ jobs:
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
       run: |
         BS_APP_PATH=$(curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" -X POST "https://api-cloud.browserstack.com/app-automate/upload" -F "file=@app/build/outputs/apk/release/app-release-unsigned.apk")
-        echo $BS_APP_PATH
     - name: Publish Apk
       uses: actions/upload-artifact@v3
       with:
@@ -80,7 +82,7 @@ jobs:
       run: chmod +x gradlew
     - name: Get app version
       env:
-        APP_PATH: ${{ fromJSON(steps.version.outputs.BS_APP_PATH) }}
+        APP_PATH: ${{ fromJSON(env.BS_APP_PATH) }}
       run: |
         echo "APP_VERSION=$(./gradlew -q printVersionName)"
         echo $APP_PATH
