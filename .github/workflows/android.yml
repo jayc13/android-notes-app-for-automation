@@ -47,9 +47,9 @@ jobs:
         BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
       run: |
-        echo 'JSON_RESPONSE<<EOF' >> $GITHUB_OUTPUT
+        echo 'BS_APP_PATH<<EOF' >> $GITHUB_OUTPUT
         curl -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" -X POST "https://api-cloud.browserstack.com/app-automate/upload" -F "file=@app/build/outputs/apk/release/app-release-unsigned.apk" >> $GITHUB_OUTPUT
-        echo 'JSON_RESPONSE<<EOF' >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
     - name: Publish Apk
       uses: actions/upload-artifact@v3
       with:
@@ -87,7 +87,7 @@ jobs:
     - name: Debug
       env:
         APP_VERSION: ${{ steps.get-app-version.outputs.APP_VERSION }}
-        APP_PATH: ${{ steps.bs-apk-upload.outputs.app_url }}
+        APP_PATH: ${{ steps.bs-apk-upload.outputs.BS_APP_PATH }}
       run: |
         echo $APP_VERSION
         echo $APP_PATH
