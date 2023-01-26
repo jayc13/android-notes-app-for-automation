@@ -19,6 +19,8 @@ jobs:
   build:
     name: Build Android APK
     runs-on: ubuntu-latest
+    outputs:
+      APP_PATH: ${{ steps.bs-apk-upload.outputs.APP_PATH }}
 
     steps:
     - uses: actions/checkout@v3
@@ -84,7 +86,7 @@ jobs:
     - name: Debug
       env:
         APP_VERSION: ${{ steps.get-app-version.outputs.APP_VERSION }}
-        APP_PATH: ${{ steps.bs-apk-upload.outputs.APP_PATH }}
+        APP_PATH: ${{ needs.build.outputs.APP_PATH }}
       run: |
         echo $APP_VERSION
         echo $APP_PATH
