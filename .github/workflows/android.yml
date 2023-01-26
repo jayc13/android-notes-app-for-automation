@@ -82,8 +82,9 @@ jobs:
       run: chmod +x gradlew
     - name: Get app version
       env:
-        APP_PATH: ${{ fromJSON(env.BS_APP_PATH) }}
+        APP_PATH: ${{ env.BS_APP_PATH }}
       run: |
         echo "APP_VERSION=$(./gradlew -q printVersionName)"
+        echo $BS_APP_PATH
         echo $APP_PATH
 
