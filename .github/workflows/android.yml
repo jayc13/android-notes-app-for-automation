@@ -65,7 +65,8 @@ jobs:
   test:
     name: Run Tests - Browserstack
     runs-on: ubuntu-latest
-    container: node:10.16-jessie
+    needs: build
+    container: caballerojavier13/automation-java-appium-notes:${{ steps.get-app-version.outputs.APP_VERSION }}
     steps:
       - name: Debug
         env:
@@ -74,8 +75,4 @@ jobs:
         run: |
           echo $APP_VERSION
           echo $APP_PATH
-      - run: |
-          echo This job does specify a container.
-          echo It runs in the container instead of the VM.
-        name: Run in container
 
