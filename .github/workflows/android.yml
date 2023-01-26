@@ -80,7 +80,6 @@ jobs:
           BROWSERSTACK_BUILD_NAME: '${{ needs.build.outputs.APP_VERSION }}'
           BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
         run: |
-          pwd
           cd /project
           gradle test --no-daemon
 
