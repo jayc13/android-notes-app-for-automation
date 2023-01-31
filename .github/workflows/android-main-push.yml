@@ -58,26 +58,43 @@ jobs:
           name: Notes.apk
           path: app/build/outputs/apk/release/app-release-unsigned.apk
           retention-days: 1
-
-  test:
-    name: Run Tests - Browserstack
+  test-preparation:
+    name: Test Preparation
     runs-on: ubuntu-latest
     needs: build
+    outputs:
+      TEST_IMAGE_VERSION: ${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
     steps:
       - name: Get test Docker image
         id: test-image-version
         env:
           APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
         run: curl --head --silent --fail --output /dev/null "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION" && echo "TEST_IMAGE_VERSION=$(APP_VERSION)" >> $GITHUB_OUTPUT ||  echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT;
+  test:
+    name: Run Tests - Browserstack
+    runs-on: ubuntu-latest
+    needs: test-preparation
+    container: caballerojavier13/automation-java-appium-notes:${{ needs.test-preparation.outputs.TEST_IMAGE_VERSION }}
+    steps:
       - name: Test execution
-        uses: addnab/docker-run-action@v3
-        with:
-          image: caballerojavier13/automation-java-appium-notes:${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
-          options: -e APP_VERSION="${{ needs.build.outputs.APP_VERSION }}" -e APP_PATH="${{ needs.build.outputs.APP_PATH }}" -e RUN_ON_BROWSERSTACK="TRUE" -e DEVICE_NAME="Google Pixel 7" -e PLATFORM_VERSION="13.0" -e BROWSERSTACK_USERNAME="${{ secrets.BROWSERSTACK_USERNAME }}" -e BROWSERSTACK_ACCESS_KEY="${{ secrets.BROWSERSTACK_ACCESS_KEY }}" -e BROWSERSTACK_BUILD_NAME="${{ needs.build.outputs.APP_VERSION }}" -e BROWSERSTACK_PROJECT_NAME="Notes App GitHub Actions" -e TEST_IMAGE_VERSION="${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}"
-          shell: bash
-          run: |
-            cd /project
-            gradle test --no-daemon
+        env:
+          APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
+          APP_PATH: ${{ needs.build.outputs.APP_PATH }}
+          RUN_ON_BROWSERSTACK: 'TRUE'
+          DEVICE_NAME: 'Google Pixel 7'
+          PLATFORM_VERSION: '13.0'
+          BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
+          BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
+          BROWSERSTACK_BUILD_NAME: '${{ needs.build.outputs.APP_VERSION }}'
+          BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
+        run: |
+          cd /project
+          gradle test --no-daemon
+  release-creation:
+    name: Release Creation
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
       - name: Recreate Release
         uses: GongT/actions-recreate-release@v1
         with:
