@@ -78,8 +78,8 @@ jobs:
     steps:
       - name: Test execution
         env:
-          APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
-          APP_PATH: ${{ needs.build.outputs.APP_PATH }}
+          APP_VERSION: '${{ needs.build.outputs.APP_VERSION }}'
+          APP_PATH: '${{ needs.build.outputs.APP_PATH }}'
           RUN_ON_BROWSERSTACK: 'TRUE'
           DEVICE_NAME: 'Google Pixel 7'
           PLATFORM_VERSION: '13.0'
@@ -89,6 +89,9 @@ jobs:
           BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
         run: |
           cd /project
+          echo $APP_VERSION
+          echo $APP_PATH
+          echo $BROWSERSTACK_BUILD_NAME
           gradle test --no-daemon
   release-creation:
     name: Release Creation
