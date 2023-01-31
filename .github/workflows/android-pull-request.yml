@@ -98,7 +98,6 @@ jobs:
           run: |
             cd /project
             gradle test --no-daemon
-
       - name: Recreate Release
         uses: GongT/actions-recreate-release@v1
         env:

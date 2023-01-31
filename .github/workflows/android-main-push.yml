@@ -84,6 +84,10 @@ jobs:
             -e BROWSERSTACK_BUILD_NAME='${{ needs.build.outputs.APP_VERSION }}' \
             -e BROWSERSTACK_PROJECT_NAME='Notes App GitHub Actions' \
             -e TEST_IMAGE_VERSION='${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}'
+          shell: bash
+          run: |
+            cd /project
+            gradle test --no-daemon
       - name: Recreate Release
         uses: GongT/actions-recreate-release@v1
         env:
