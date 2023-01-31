@@ -68,10 +68,7 @@ jobs:
         id: test-image-version
         env:
           APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
-        run: |
-          curl --head --fail "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/1.1.0" \
-            && echo "TEST_IMAGE_VERSION=$(APP_VERSION)" >> $GITHUB_OUTPUT \
-            ||  echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT;
+        run: curl --fail --head "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION" && echo "DOCKER_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT ||  echo "DOCKER_VERSION=latest" >> $GITHUB_OUTPUT;
       - name: Test execution
         uses: addnab/docker-run-action@v3
         env:
