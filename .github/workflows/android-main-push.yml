@@ -63,8 +63,15 @@ jobs:
     name: Run Tests - Browserstack
     runs-on: ubuntu-latest
     needs: build
-    container: caballerojavier13/automation-java-appium-notes:latest
     steps:
+      - name: Get test Docker image
+        id: test-image-version
+        env:
+          APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
+        run: |
+          curl --head --fail "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/1.1.0" \
+            && echo "TEST_IMAGE_VERSION=$(APP_VERSION)" >> $GITHUB_OUTPUT \
+            ||  echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT;
       - name: Test execution
         uses: addnab/docker-run-action@v3
         env:
@@ -77,8 +84,9 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
           BROWSERSTACK_BUILD_NAME: '${{ needs.build.outputs.APP_VERSION }}'
           BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
+          TEST_IMAGE_VERSION: '${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}'
         with:
           image: caballerojavier13/automation-java-appium-notes:${{ needs.build.outputs.APP_VERSION }}
           run: |
-            echo $APP_VERSION
+            echo $DOCKER_VERSION
 
