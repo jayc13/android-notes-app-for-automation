@@ -66,6 +66,7 @@ jobs:
     container: caballerojavier13/automation-java-appium-notes:latest
     steps:
       - name: Test execution
+        uses: addnab/docker-run-action@v3
         env:
           APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
           APP_PATH: ${{ needs.build.outputs.APP_PATH }}
@@ -76,7 +77,8 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
           BROWSERSTACK_BUILD_NAME: '${{ needs.build.outputs.APP_VERSION }}'
           BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
-        run: |
-          cd /project
-          gradle test --no-daemon
+        with:
+          image: caballerojavier13/automation-java-appium-notes:${{ needs.build.outputs.APP_VERSION }}
+          run: |
+            echo $APP_VERSION
 
