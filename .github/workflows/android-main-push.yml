@@ -63,6 +63,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     outputs:
+      APP_PATH: ${{ needs.build.outputs.APP_PATH }}
+      APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
       TEST_IMAGE_VERSION: ${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
     steps:
       - name: Get test Docker image
@@ -74,19 +76,20 @@ jobs:
     name: Run Tests - Browserstack
     runs-on: ubuntu-latest
     needs: test-preparation
-    container: caballerojavier13/automation-java-appium-notes:latest
+    container: 
+      image: caballerojavier13/automation-java-appium-notes:${{ needs.test-preparation.outputs.APP_VERSION }}
+      env:
+        APP_VERSION: ${{ needs.test-preparation.outputs.APP_VERSION }}
+        APP_PATH: ${{ needs.test-preparation.outputs.APP_PATH }}
+        RUN_ON_BROWSERSTACK: 'TRUE'
+        DEVICE_NAME: 'Google Pixel 7'
+        PLATFORM_VERSION: '13.0'
+        BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
+        BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
+        BROWSERSTACK_BUILD_NAME: '${{ needs.test-preparation.outputs.APP_VERSION }}'
+        BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
     steps:
       - name: Test execution
-        env:
-          APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
-          APP_PATH: ${{ needs.build.outputs.APP_PATH }}
-          RUN_ON_BROWSERSTACK: 'TRUE'
-          DEVICE_NAME: 'Google Pixel 7'
-          PLATFORM_VERSION: '13.0'
-          BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
-          BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
-          BROWSERSTACK_BUILD_NAME: '${{ needs.build.outputs.APP_VERSION }}'
-          BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
         run: |
           cd /project
           gradle test --no-daemon
