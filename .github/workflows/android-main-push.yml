@@ -71,8 +71,8 @@ jobs:
         run: |
           CODE=$(curl --write-out '%{http_code}' --silent --output /dev/null --head "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION")
           if [ $CODE!="200" ] \ 
-          then echo "DOCKER_VERSION=latest" >> $GITHUB_OUTPUT; \
-          else echo "DOCKER_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT \ 
+          then echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT; \
+          else echo "TEST_IMAGE_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT \ 
           fi \
       - name: Test execution
         uses: addnab/docker-run-action@v3
