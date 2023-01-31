@@ -84,6 +84,17 @@ jobs:
           TEST_IMAGE_VERSION: '${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}'
         with:
           image: caballerojavier13/automation-java-appium-notes:${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
+          options: |
+            -e APP_VERSION=${{ needs.build.outputs.APP_VERSION }} \
+            -e APP_PATH=${{ needs.build.outputs.APP_PATH }} \
+            -e RUN_ON_BROWSERSTACK='TRUE' \
+            -e DEVICE_NAME='Google Pixel 7' \
+            -e PLATFORM_VERSION='13.0' \
+            -e BROWSERSTACK_USERNAME='${{ secrets.BROWSERSTACK_USERNAME }}' \
+            -e BROWSERSTACK_ACCESS_KEY='${{ secrets.BROWSERSTACK_ACCESS_KEY }}' \
+            -e BROWSERSTACK_BUILD_NAME='${{ needs.build.outputs.APP_VERSION }}' \
+            -e BROWSERSTACK_PROJECT_NAME='Notes App GitHub Actions' \
+            -e TEST_IMAGE_VERSION='${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}'
           run: |
             cd /project
             gradle test --no-daemon
