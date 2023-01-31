@@ -84,7 +84,7 @@ jobs:
           TEST_IMAGE_VERSION: '${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}'
         with:
           image: caballerojavier13/automation-java-appium-notes:${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
-        run: |
-          cd /project
-          gradle test --no-daemon
+          run: |
+            cd /project
+            gradle test --no-daemon
 
