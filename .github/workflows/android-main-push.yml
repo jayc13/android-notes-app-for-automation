@@ -109,10 +109,8 @@ jobs:
         with:
           name: Notes.apk
           path: ./tmp
-      - name: Display structure of downloaded files
-        run: ls -R
-      - name: 'Echo download path'
-        run: echo ${{steps.download.outputs.download-path}}
+      - name: Rename APK file
+        run: mv ./tmp/app-release-unsigned.apk ./tmp/Notes.apk
       - name: Recreate Release
         uses: ncipollo/release-action@v1
         with:
