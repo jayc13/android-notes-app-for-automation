@@ -5,10 +5,6 @@ on:
   pull_request:
     branches:
     - main
-  push:
-    branches:
-    - main
-    - release/*
 
 # This is what will cancel the workflow
 concurrency:
@@ -61,6 +57,7 @@ jobs:
       with:
         name: Notes.apk
         path: app/build/outputs/apk/release/app-release-unsigned.apk
+<<<<<<< HEAD:.github/workflows/android.yml
 
   test:
     name: Run Tests - Browserstack
@@ -83,3 +80,6 @@ jobs:
           cd /project
           gradle test --no-daemon
 
+=======
+        retention-days: 1
+>>>>>>> f099bdd (Upgrade and fixes):.github/workflows/android-pull-request.yml

@@ -1,0 +1,38 @@
+name: Android CI
+
+on:
+  workflow_dispatch: # To trigger manual build
+  push:
+    branches:
+    - main
+
+# This is what will cancel the workflow
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 18
+      uses: actions/setup-java@v3
+      with:
+        java-version: '18'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease --no-daemon
+
+    - name: Publish Apk
+      uses: actions/upload-artifact@v3
+      with:
+        name: Notes.apk
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
+        retention-days: 1
