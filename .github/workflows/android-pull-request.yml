@@ -57,7 +57,7 @@ jobs:
       with:
         name: Notes.apk
         path: app/build/outputs/apk/release/app-release-unsigned.apk
-<<<<<<< HEAD:.github/workflows/android.yml
+        retention-days: 1
 
   test:
     name: Run Tests - Browserstack
@@ -79,7 +79,3 @@ jobs:
         run: |
           cd /project
           gradle test --no-daemon
-
-=======
-        retention-days: 1
->>>>>>> f099bdd (Upgrade and fixes):.github/workflows/android-pull-request.yml
