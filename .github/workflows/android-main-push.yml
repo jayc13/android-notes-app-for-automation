@@ -68,12 +68,7 @@ jobs:
         id: test-image-version
         env:
           APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
-        run: |
-          CODE=$(curl --write-out '%{http_code}' --silent --output /dev/null --head "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION")
-          if [ $CODE!="200" ] \ 
-          then echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT; \
-          else echo "TEST_IMAGE_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT \ 
-          fi \
+        run: curl --head --silent --fail --output /dev/null "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION" && echo "TEST_IMAGE_VERSION=$(APP_VERSION)" >> $GITHUB_OUTPUT ||  echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT;
       - name: Test execution
         uses: addnab/docker-run-action@v3
         env:
