@@ -1,4 +1,4 @@
-name: Android CI
+name: Android Main Push CI
 
 on:
   workflow_dispatch: # To trigger manual build
@@ -71,19 +71,20 @@ jobs:
         run: curl --head --silent --fail --output /dev/null "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION" && echo "TEST_IMAGE_VERSION=$(APP_VERSION)" >> $GITHUB_OUTPUT ||  echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT;
       - name: Test execution
         uses: addnab/docker-run-action@v3
-        env:
-          APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
-          APP_PATH: ${{ needs.build.outputs.APP_PATH }}
-          RUN_ON_BROWSERSTACK: 'TRUE'
-          DEVICE_NAME: 'Google Pixel 7'
-          PLATFORM_VERSION: '13.0'
-          BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
-          BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
-          BROWSERSTACK_BUILD_NAME: '${{ needs.build.outputs.APP_VERSION }}'
-          BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
-          TEST_IMAGE_VERSION: '${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}'
         with:
           image: caballerojavier13/automation-java-appium-notes:${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
+          options:
+          env: |
+            -e APP_VERSION=${{ needs.build.outputs.APP_VERSION }} \
+            -e APP_PATH=${{ needs.build.outputs.APP_PATH }} \
+            -e RUN_ON_BROWSERSTACK='TRUE' \
+            -e DEVICE_NAME='Google Pixel 7' \
+            -e PLATFORM_VERSION='13.0' \
+            -e BROWSERSTACK_USERNAME='${{ secrets.BROWSERSTACK_USERNAME }}' \
+            -e BROWSERSTACK_ACCESS_KEY='${{ secrets.BROWSERSTACK_ACCESS_KEY }}' \
+            -e BROWSERSTACK_BUILD_NAME='${{ needs.build.outputs.APP_VERSION }}' \
+            -e BROWSERSTACK_PROJECT_NAME='Notes App GitHub Actions' \
+            -e TEST_IMAGE_VERSION='${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}'
           run: |
             cd /project
             gradle test --no-daemon

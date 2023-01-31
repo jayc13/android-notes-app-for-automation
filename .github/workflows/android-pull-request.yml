@@ -1,4 +1,4 @@
-name: Android CI
+name: Android Pull Request CI
 
 on:
   workflow_dispatch: # To trigger manual build
