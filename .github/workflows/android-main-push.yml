@@ -98,16 +98,18 @@ jobs:
   release-creation:
     name: Release Creation
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: test
     steps:
       - uses: actions/checkout@v3
       - name: Recreate Release
-        uses: GongT/actions-recreate-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: '${{ needs.test.outputs.APP_VERSION }}'
+          tag: '${{ needs.test.outputs.APP_VERSION }}'
           release_name: '${{ needs.test.outputs.APP_VERSION }}'
           draft: false
+          allowUpdates: true
           prerelease: false
+          artifacts: "release.tar.gz,foo/*.txt"
 
