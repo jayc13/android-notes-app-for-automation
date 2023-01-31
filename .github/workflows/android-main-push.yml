@@ -73,8 +73,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: caballerojavier13/automation-java-appium-notes:${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
-          options: |
-            -e APP_VERSION=${{ needs.build.outputs.APP_VERSION }} \
+          options: -e APP_VERSION=${{ needs.build.outputs.APP_VERSION }} \
             -e APP_PATH=${{ needs.build.outputs.APP_PATH }} \
             -e RUN_ON_BROWSERSTACK='TRUE' \
             -e DEVICE_NAME='Google Pixel 7' \
@@ -90,8 +89,6 @@ jobs:
             gradle test --no-daemon
       - name: Recreate Release
         uses: GongT/actions-recreate-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           tag_name: latest
           release_name: '${{ needs.build.outputs.APP_VERSION }}'
