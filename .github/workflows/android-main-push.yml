@@ -94,7 +94,7 @@ jobs:
       - name: Test execution
         run: |
           cd /project
-          # gradle test --no-daemon
+          gradle test --no-daemon
   release-creation:
     name: Release Creation
     runs-on: ubuntu-latest
@@ -120,5 +120,5 @@ jobs:
           prerelease: false
           makeLatest: true
           replacesArtifacts: true
-          artifact: "./tmp/Notes.apk"
+          artifacts: "./tmp/Notes.apk"
 
