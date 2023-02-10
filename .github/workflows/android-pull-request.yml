@@ -58,39 +58,20 @@ jobs:
           name: Notes.apk
           path: app/build/outputs/apk/release/app-release-unsigned.apk
           retention-days: 1
-      test-preparation:
-        name: Test Preparation
-        runs-on: ubuntu-latest
-        needs: build
-        outputs:
-          APP_PATH: ${{ needs.build.outputs.APP_PATH }}
+  test-preparation:
+    name: Test Preparation
+    runs-on: ubuntu-latest
+    needs: build
+    outputs:
+      APP_PATH: ${{ needs.build.outputs.APP_PATH }}
+      APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
+      TEST_IMAGE_VERSION: ${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
+    steps:
+      - name: Get test Docker image
+        id: test-image-version
+        env:
           APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
-          TEST_IMAGE_VERSION: ${{ steps.test-image-version.outputs.TEST_IMAGE_VERSION }}
-        steps:
-          - name: Get test Docker image
-            id: test-image-version
-            env:
-              APP_VERSION: ${{ needs.build.outputs.APP_VERSION }}
-            run: curl --head --silent --fail --output /dev/null "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION" && echo "TEST_IMAGE_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT ||  echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT;
-        - name: Upload APK to BrowserStack
-          id: bs-apk-upload
-          env:
-            BROWSERSTACK_USERNAME: '${{ secrets.BROWSERSTACK_USERNAME }}'
-            BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
-          run: |
-            BS_PATH=$(curl -s -u "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" -X POST "https://api-cloud.browserstack.com/app-automate/upload" -F "file=@app/build/outputs/apk/release/app-release-unsigned.apk" | jq .app_url)
-            echo "APP_PATH=$BS_PATH" >> $GITHUB_OUTPUT
-        - name: Get app version
-          id: get-app-version
-          run: |
-            echo "APP_VERSION=$(./gradlew -q printVersionName)" >> $GITHUB_OUTPUT
-        - name: Publish Apk
-          uses: actions/upload-artifact@v3
-          with:
-            name: Notes.apk
-            path: app/build/outputs/apk/release/app-release-unsigned.apk
-            retention-days: 1
-
+        run: curl --head --silent --fail --output /dev/null "https://hub.docker.com/v2/namespaces/caballerojavier13/repositories/automation-java-appium-notes/tags/$APP_VERSION" && echo "TEST_IMAGE_VERSION=$APP_VERSION" >> $GITHUB_OUTPUT ||  echo "TEST_IMAGE_VERSION=latest" >> $GITHUB_OUTPUT;
   test:
     name: Run Tests - Browserstack
     runs-on: ubuntu-latest
