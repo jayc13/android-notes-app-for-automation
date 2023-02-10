@@ -94,3 +94,4 @@ jobs:
       - name: Test execution
         run: |
           cd /project
+          gradle test --no-daemon
