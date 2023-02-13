@@ -97,12 +97,16 @@ jobs:
         run: |
           cd /project
           gradle test --no-daemon
-      - name: LS
+      - name: LS 1
         run: ls -a /test-build
+      - name: LS 2
+        run: ls -a /project
+      - name: LS 3
+        run: ls -a /project/build
       - name: Cache Test Result
         uses: actions/cache@v3
         with:
-          path: /test-build
+          path: /project/build
           key: ${{ runner.os }}-test-build-${{ hashFiles('test-build') }}
           restore-keys: |
             ${{ runner.os }}-gradle-caches-
