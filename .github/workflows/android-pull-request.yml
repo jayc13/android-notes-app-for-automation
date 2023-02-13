@@ -90,8 +90,17 @@ jobs:
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
         BROWSERSTACK_BUILD_NAME: '${{ needs.test-preparation.outputs.APP_VERSION }}'
         BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
+      volumes:
+        - /project/build:/test-build
     steps:
       - name: Test execution
         run: |
           cd /project
           gradle test --no-daemon
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: Tests            # Name of the check run which will be created
+          path: /test-build/test-results/TEST-*.xml    # Path to test results
+          reporter: java-junit        # Format of test results
