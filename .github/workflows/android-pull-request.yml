@@ -122,7 +122,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: Tests            # Name of the check run which will be created
+          name: Report            # Name of the check run which will be created
           path: ./test-results/test/TEST-*.xml    # Path to test results
           reporter: java-junit        # Format of test results
           fail-on-error: false
