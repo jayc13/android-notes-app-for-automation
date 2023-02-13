@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  checks: write
+
 jobs:
   build:
     name: Build Android APK
@@ -95,6 +98,29 @@ jobs:
         run: |
           cd /project
           gradle test --no-daemon
+      - name: Upload report
+        uses: actions/upload-artifact@master
+        with:
+          name: test-build
+          path: /project/build/test-results
+  report:
+    name: Process Report
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+      - name: Restore cached report
+        uses: actions/download-artifact@master
+        with:
+          name: test-build
+          path: ./test-results
+      - name: Publish Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: Tests            # Name of the check run which will be created
+          path: ./test-results/test/TEST-*.xml    # Path to test results
+          reporter: java-junit        # Format of test results
   release-creation:
     name: Release Creation
     runs-on: ubuntu-latest

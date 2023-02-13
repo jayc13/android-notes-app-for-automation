@@ -93,8 +93,6 @@ jobs:
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
         BROWSERSTACK_BUILD_NAME: '${{ needs.test-preparation.outputs.APP_VERSION }}'
         BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
-      volumes:
-        - /project/build:/test-build
     steps:
       - name: Test execution
         run: |
