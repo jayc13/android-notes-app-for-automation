@@ -108,6 +108,7 @@ jobs:
     name: Process Report
     runs-on: ubuntu-latest
     needs: test
+    if: always()
     steps:
       - uses: actions/checkout@v3
         if: always()
