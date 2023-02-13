@@ -93,8 +93,6 @@ jobs:
         BROWSERSTACK_ACCESS_KEY: '${{ secrets.BROWSERSTACK_ACCESS_KEY }}'
         BROWSERSTACK_BUILD_NAME: '${{ needs.test-preparation.outputs.APP_VERSION }}'
         BROWSERSTACK_PROJECT_NAME: 'Notes App GitHub Actions'
-      volumes:
-        - /project/build:/test-build
     steps:
       - name: Test execution
         run: |
@@ -102,6 +100,7 @@ jobs:
           gradle test --no-daemon
       - name: Upload report
         uses: actions/upload-artifact@master
+        if: always()
         with:
           name: test-build
           path: /project/build/test-results
@@ -109,17 +108,21 @@ jobs:
     name: Process Report
     runs-on: ubuntu-latest
     needs: test
+    if: always()
     steps:
       - uses: actions/checkout@v3
+        if: always()
       - name: Restore cached report
         uses: actions/download-artifact@master
+        if: always()
         with:
           name: test-build
           path: ./test-results
       - name: Publish Report
         uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+        if: always()
         with:
-          name: Tests            # Name of the check run which will be created
+          name: Report            # Name of the check run which will be created
           path: ./test-results/test/TEST-*.xml    # Path to test results
           reporter: java-junit        # Format of test results
+          fail-on-error: false
